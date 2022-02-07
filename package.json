@@ -1,0 +1,17 @@
+{
+  "name": "clean-architecture-course",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "igornfaustino <igor@nfaustino.com>",
+  "license": "MIT",
+  "scripts": {
+    "tsc:init": "tsc --init",
+    "build": "tsc",
+    "test": "tsc && jest dist/"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "jest": "^27.5.0",
+    "typescript": "^4.5.5"
+  }
+}
