@@ -75,3 +75,9 @@ test("should calculate order total price", () => {
 
   expect(order.getTotal()).toBe(29.49);
 });
+
+test("should return price 0 if has no order", () => {
+  const order = new Order({ cpf: "935.411.347-80" });
+
+  expect(order.getTotal()).toBe(0);
+});
