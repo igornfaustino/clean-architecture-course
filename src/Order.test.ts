@@ -14,6 +14,7 @@ type Item = {
 class Order {
   cpf: CPF;
   items: Item[] = [];
+  discount: number = 0;
 
   constructor(order: OrderData) {
     this.cpf = new CPF(order.cpf);
@@ -23,12 +24,18 @@ class Order {
     this.items.push(item);
   }
 
+  addDiscount(percentage: number) {
+    this.discount = percentage;
+  }
+
   getTotal() {
     const total = this.items.reduce(
       (total, item) => item.quantity * item.price + total,
       0
     );
-    return parseFloat(total.toFixed(2));
+    const discountValue = total * this.discount;
+    const finalPrice = total - discountValue;
+    return parseFloat(finalPrice.toFixed(2));
   }
 }
 
@@ -78,6 +85,40 @@ test("should calculate order total price", () => {
 
 test("should return price 0 if has no order", () => {
   const order = new Order({ cpf: "935.411.347-80" });
+
+  expect(order.getTotal()).toBe(0);
+});
+
+test("should calculate correct price with discount", () => {
+  const order = new Order({ cpf: "935.411.347-80" });
+  const products = [
+    {
+      description: faker.commerce.productDescription(),
+      price: 50.0,
+      quantity: 2,
+    },
+  ];
+  order.addDiscount(0.2);
+  products.forEach((product) => {
+    order.addItem(product);
+  });
+
+  expect(order.getTotal()).toBe(80.0);
+});
+
+test("should have price 0 for 100% off", () => {
+  const order = new Order({ cpf: "935.411.347-80" });
+  const products = [
+    {
+      description: faker.commerce.productDescription(),
+      price: 50.0,
+      quantity: 2,
+    },
+  ];
+  order.addDiscount(1);
+  products.forEach((product) => {
+    order.addItem(product);
+  });
 
   expect(order.getTotal()).toBe(0);
 });
