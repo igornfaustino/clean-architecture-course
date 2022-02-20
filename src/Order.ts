@@ -25,7 +25,7 @@ export class Order {
 
   getTotal() {
     const total = this.items.reduce(
-      (total, item) => item.quantity * item.price + total,
+      (total, orderItem) => orderItem.total + total,
       0
     );
     const discountValue = total * this.discount;
