@@ -11,6 +11,10 @@ test("should return true for an valid cpf", () => {
   expect(new CPF("935.411.347-80").cpf).toBe("93541134780");
 });
 
-test("should return false if no cpf is passed", () => {
+test("should throw if no cpf is passed", () => {
   expect(() => new CPF("")).toThrow();
+});
+
+test("should throw if wrong length cpf is passed", () => {
+  expect(() => new CPF("123123")).toThrow();
 });
