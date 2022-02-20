@@ -3,6 +3,10 @@ export class Item {
     readonly id: number,
     readonly category: string,
     readonly description: string,
-    readonly price: number
+    readonly price: number,
+    readonly width: number,
+    readonly height: number,
+    readonly length: number,
+    readonly weight: number
   ) {}
 }

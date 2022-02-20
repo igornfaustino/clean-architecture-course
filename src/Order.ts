@@ -18,7 +18,11 @@ export class Order {
   }
 
   addItem(item: Item, quantity: number) {
-    this.items.push(new OrderItem(item.id, item.price, quantity));
+    const volume = item.width * item.height * item.height;
+    const density = item.weight / volume;
+    this.items.push(
+      new OrderItem(item.id, item.price, quantity, volume, density)
+    );
   }
 
   addCoupon(coupon: Coupon) {
@@ -42,7 +46,14 @@ export class Order {
     return total - discountValue;
   }
 
-  getShippingPrice() {
-    return 10;
+  getShippingPrice(distance: number) {
+    const totalItemsSpace = this.items.reduce(
+      (total, item) =>
+        total + (item.density / 100) * item.volume * item.quantity,
+      0
+    );
+    const calculateShipping = distance * totalItemsSpace;
+    const shippingPrice = calculateShipping < 10 ? 10 : calculateShipping;
+    return parseFloat(shippingPrice.toFixed(2));
   }
 }
