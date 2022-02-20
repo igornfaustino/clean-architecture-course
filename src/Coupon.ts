@@ -7,5 +7,6 @@ export class Coupon {
 
   get isValid() {
     if (!this.expireDate) return true;
+    return true;
   }
 }
