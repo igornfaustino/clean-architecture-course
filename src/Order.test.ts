@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { Item } from "./Item";
 import { Order } from "./Order";
 
 test("should not create an order with an invalid cpf", () => {
@@ -7,42 +8,21 @@ test("should not create an order with an invalid cpf", () => {
 
 test("should add an item to an order", () => {
   const order = new Order({ cpf: "935.411.347-80" });
-  const product = {
-    description: faker.commerce.productDescription(),
-    price: faker.datatype.float({ precision: 2 }),
-    quantity: faker.datatype.number(10),
-  };
+  const product = new Item(1, "Instrumentos Musicais", "Guitarra", 1000);
 
-  order.addItem(product);
+  order.addItem(product, 1);
 
-  expect(order.items[0]).toEqual(product);
+  expect(order.items[0].idItem).toBe(product.id);
 });
 
 test("should calculate order total price", () => {
   const order = new Order({ cpf: "935.411.347-80" });
-  const products = [
-    {
-      description: faker.commerce.productDescription(),
-      price: 10.0,
-      quantity: 2,
-    },
-    {
-      description: faker.commerce.productDescription(),
-      price: 5.5,
-      quantity: 1,
-    },
-    {
-      description: faker.commerce.productDescription(),
-      price: 3.99,
-      quantity: 1,
-    },
-  ];
 
-  products.forEach((product) => {
-    order.addItem(product);
-  });
+  order.addItem(new Item(1, "Instrumentos Musicais", "Guitarra", 1000), 1);
+  order.addItem(new Item(1, "Instrumentos Musicais", "Amplificador", 5000), 1);
+  order.addItem(new Item(1, "Instrumentos Musicais", "Cabo", 30), 3);
 
-  expect(order.getTotal()).toBe(29.49);
+  expect(order.getTotal()).toBe(6090);
 });
 
 test("should return price 0 if has no order", () => {
@@ -61,26 +41,16 @@ test("should calculate correct price with discount", () => {
     },
   ];
   order.addDiscount(0.2);
-  products.forEach((product) => {
-    order.addItem(product);
-  });
+  order.addItem(new Item(1, "Instrumentos Musicais", "Guitarra", 100), 1);
 
   expect(order.getTotal()).toBe(80.0);
 });
 
 test("should have price 0 for 100% off", () => {
   const order = new Order({ cpf: "935.411.347-80" });
-  const products = [
-    {
-      description: faker.commerce.productDescription(),
-      price: 50.0,
-      quantity: 2,
-    },
-  ];
+
   order.addDiscount(1);
-  products.forEach((product) => {
-    order.addItem(product);
-  });
+  order.addItem(new Item(1, "Instrumentos Musicais", "Guitarra", 50), 2);
 
   expect(order.getTotal()).toBe(0);
 });

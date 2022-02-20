@@ -1,26 +1,22 @@
 import { CPF } from "./cpf";
+import { Item } from "./Item";
+import OrderItem from "./OrderItem";
 
 type OrderData = {
   cpf: string;
 };
 
-type Item = {
-  description: string;
-  price: number;
-  quantity: number;
-};
-
 export class Order {
   cpf: CPF;
-  items: Item[] = [];
+  items: OrderItem[] = [];
   discount: number = 0;
 
   constructor(order: OrderData) {
     this.cpf = new CPF(order.cpf);
   }
 
-  addItem(item: Item) {
-    this.items.push(item);
+  addItem(item: Item, quantity: number) {
+    this.items.push(new OrderItem(item.id, item.price, quantity));
   }
 
   addDiscount(percentage: number) {
