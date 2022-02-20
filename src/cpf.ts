@@ -28,7 +28,7 @@ export class CPF {
     return `${firstTenDigits}${secondVerificationDigit}`;
   }
 
-  private normalizeCpf = (cpf: string) => cpf.replace(/[\D]/g, "");
+  private normalizeCpf = (cpf: string) => cpf.replace(/[\.\-]/g, "").trim();
 
   private isCPFValid(cpf: string | null | undefined) {
     if (!cpf) return false;
