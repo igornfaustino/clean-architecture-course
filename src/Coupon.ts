@@ -7,6 +7,7 @@ export class Coupon {
 
   get isValid() {
     if (!this.expireDate) return true;
-    return true;
+    const now = new Date();
+    return now <= this.expireDate;
   }
 }
