@@ -1,3 +1,4 @@
+import { Coupon } from "./Coupon";
 import { CPF } from "./cpf";
 import { Item } from "./Item";
 import OrderItem from "./OrderItem";
@@ -10,6 +11,7 @@ export class Order {
   cpf: CPF;
   items: OrderItem[] = [];
   discount: number = 0;
+  coupon?: Coupon;
 
   constructor(order: OrderData) {
     this.cpf = new CPF(order.cpf);
@@ -19,8 +21,8 @@ export class Order {
     this.items.push(new OrderItem(item.id, item.price, quantity));
   }
 
-  addDiscount(percentage: number) {
-    this.discount = percentage;
+  addCoupon(coupon: Coupon) {
+    this.coupon = coupon;
   }
 
   getTotal() {
@@ -28,8 +30,14 @@ export class Order {
       (total, orderItem) => orderItem.total + total,
       0
     );
-    const discountValue = total * this.discount;
-    const finalPrice = total - discountValue;
-    return parseFloat(finalPrice.toFixed(2));
+    if (this.coupon) {
+      return this.getTotalWithDiscount(total, this.coupon.percentage);
+    }
+    return total;
+  }
+
+  private getTotalWithDiscount(total: number, percentage: number) {
+    const discountValue = (total * percentage) / 100;
+    return total - discountValue;
   }
 }

@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { Coupon } from "./Coupon";
 import { Item } from "./Item";
 import { Order } from "./Order";
 
@@ -33,15 +34,8 @@ test("should return price 0 if has no order", () => {
 
 test("should calculate correct price with discount", () => {
   const order = new Order({ cpf: "935.411.347-80" });
-  const products = [
-    {
-      description: faker.commerce.productDescription(),
-      price: 50.0,
-      quantity: 2,
-    },
-  ];
-  order.addDiscount(0.2);
   order.addItem(new Item(1, "Instrumentos Musicais", "Guitarra", 100), 1);
+  order.addCoupon(new Coupon("OFF20", 20));
 
   expect(order.getTotal()).toBe(80.0);
 });
@@ -49,7 +43,7 @@ test("should calculate correct price with discount", () => {
 test("should have price 0 for 100% off", () => {
   const order = new Order({ cpf: "935.411.347-80" });
 
-  order.addDiscount(1);
+  order.addCoupon(new Coupon("OFF100", 100));
   order.addItem(new Item(1, "Instrumentos Musicais", "Guitarra", 50), 2);
 
   expect(order.getTotal()).toBe(0);
