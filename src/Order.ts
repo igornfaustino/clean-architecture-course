@@ -53,11 +53,11 @@ export class Order {
   }
 
   getShippingPrice(distance: number) {
-    const totalItemsSpace = this.items.reduce(
+    const totalShippingDimension = this.items.reduce(
       (total, item) => total + item.shippingDimension,
       0
     );
-    const calculateShipping = distance * totalItemsSpace;
+    const calculateShipping = distance * totalShippingDimension;
     const shippingPrice = calculateShipping < 10 ? 10 : calculateShipping;
     return parseFloat(shippingPrice.toFixed(2));
   }

@@ -11,4 +11,8 @@ export class Dimension {
     this.volume = width * height * length;
     this.density = weight / this.volume;
   }
+
+  get shippingDimension() {
+    return (this.density / 100) * this.volume;
+  }
 }

@@ -20,8 +20,6 @@ export default class OrderItem {
   }
 
   get shippingDimension() {
-    return (
-      (this.dimension.density / 100) * this.dimension.volume * this.quantity
-    );
+    return this.dimension.shippingDimension * this.quantity;
   }
 }
