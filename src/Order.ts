@@ -54,9 +54,7 @@ export class Order {
 
   getShippingPrice(distance: number) {
     const totalItemsSpace = this.items.reduce(
-      (total, item) =>
-        total +
-        (item.dimension.density / 100) * item.dimension.volume * item.quantity,
+      (total, item) => total + item.shippingDimension,
       0
     );
     const calculateShipping = distance * totalItemsSpace;
