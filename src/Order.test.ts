@@ -3,6 +3,18 @@ import { Coupon } from "./Coupon";
 import { Item } from "./Item";
 import { Order } from "./Order";
 
+const createItem = ({
+  id = 1,
+  category = "Instrumentos Musicais",
+  description = "Guitarra",
+  price = 1000,
+  width = 100,
+  height = 30,
+  length = 10,
+  weight = 3,
+} = {}) =>
+  new Item(id, category, description, price, width, height, length, weight);
+
 describe("Order", () => {
   test("should not create an order with an invalid cpf", () => {
     expect(() => new Order({ cpf: "11122233344" })).toThrow();
@@ -10,16 +22,7 @@ describe("Order", () => {
 
   test("should add an item to an order", () => {
     const order = new Order({ cpf: "935.411.347-80" });
-    const product = new Item(
-      1,
-      "Instrumentos Musicais",
-      "Guitarra",
-      1000,
-      100,
-      30,
-      10,
-      3
-    );
+    const product = createItem();
 
     order.addItem(product, 1);
 
@@ -29,27 +32,9 @@ describe("Order", () => {
   test("should calculate order total price", () => {
     const order = new Order({ cpf: "935.411.347-80" });
 
-    order.addItem(
-      new Item(1, "Instrumentos Musicais", "Guitarra", 1000, 100, 30, 10, 3),
-      1
-    );
-    order.addItem(
-      new Item(
-        1,
-        "Instrumentos Musicais",
-        "Amplificador",
-        5000,
-        100,
-        50,
-        50,
-        20
-      ),
-      1
-    );
-    order.addItem(
-      new Item(1, "Instrumentos Musicais", "Cabo", 30, 10, 10, 10, 1),
-      3
-    );
+    order.addItem(createItem({ price: 1000 }), 1);
+    order.addItem(createItem({ price: 5000 }), 1);
+    order.addItem(createItem({ price: 30 }), 3);
 
     expect(order.getTotal()).toBe(6090);
   });
@@ -62,10 +47,7 @@ describe("Order", () => {
 
   test("should calculate correct price with discount", () => {
     const order = new Order({ cpf: "935.411.347-80" });
-    order.addItem(
-      new Item(1, "Instrumentos Musicais", "Guitarra", 100, 100, 30, 10, 3),
-      1
-    );
+    order.addItem(createItem({ price: 100 }), 1);
     order.addCoupon(new Coupon("OFF20", 20));
 
     expect(order.getTotal()).toBe(80.0);
@@ -75,10 +57,7 @@ describe("Order", () => {
     const order = new Order({ cpf: "935.411.347-80" });
 
     order.addCoupon(new Coupon("OFF100", 100));
-    order.addItem(
-      new Item(1, "Instrumentos Musicais", "Guitarra", 50, 100, 30, 10, 3),
-      2
-    );
+    order.addItem(createItem({ price: 100 }), 2);
 
     expect(order.getTotal()).toBe(0);
   });
