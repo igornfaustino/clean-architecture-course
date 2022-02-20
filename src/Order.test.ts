@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Coupon } from "./Coupon";
+import { Dimension } from "./Dimension";
 import { Item } from "./Item";
 import { Order } from "./Order";
 
@@ -12,8 +13,10 @@ const createItem = ({
   height = 30,
   length = 10,
   weight = 3,
-} = {}) =>
-  new Item(id, category, description, price, width, height, length, weight);
+} = {}) => {
+  const dimension = new Dimension(width, height, length, weight);
+  return new Item(id, category, description, price, dimension);
+};
 
 describe("Order", () => {
   test("should not create an order with an invalid cpf", () => {
@@ -82,7 +85,7 @@ describe("Order", () => {
   test("should return shipping price", () => {
     const order = new Order({ cpf: "935.411.347-80" });
     order.addItem(
-      new Item(1, "Instrumentos Musicais", "Guitarra", 1000, 100, 30, 10, 3),
+      createItem({ width: 100, height: 30, length: 10, weight: 3 }),
       1
     );
 

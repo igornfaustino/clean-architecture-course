@@ -19,15 +19,7 @@ export class Order {
 
   addItem(item: Item, quantity: number) {
     this.items.push(
-      new OrderItem(
-        item.id,
-        item.price,
-        quantity,
-        item.width,
-        item.height,
-        item.length,
-        item.weight
-      )
+      new OrderItem(item.id, item.price, quantity, item.dimensions)
     );
   }
 
