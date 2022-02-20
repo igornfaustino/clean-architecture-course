@@ -18,10 +18,16 @@ export class Order {
   }
 
   addItem(item: Item, quantity: number) {
-    const volume = item.width * item.height * item.height;
-    const density = item.weight / volume;
     this.items.push(
-      new OrderItem(item.id, item.price, quantity, volume, density)
+      new OrderItem(
+        item.id,
+        item.price,
+        quantity,
+        item.width,
+        item.height,
+        item.length,
+        item.weight
+      )
     );
   }
 
@@ -49,7 +55,8 @@ export class Order {
   getShippingPrice(distance: number) {
     const totalItemsSpace = this.items.reduce(
       (total, item) =>
-        total + (item.density / 100) * item.volume * item.quantity,
+        total +
+        (item.dimension.density / 100) * item.dimension.volume * item.quantity,
       0
     );
     const calculateShipping = distance * totalItemsSpace;
