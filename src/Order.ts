@@ -41,4 +41,8 @@ export class Order {
     const discountValue = (total * percentage) / 100;
     return total - discountValue;
   }
+
+  getShippingPrice() {
+    return 10;
+  }
 }
