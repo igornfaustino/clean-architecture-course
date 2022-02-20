@@ -48,3 +48,12 @@ test("should have price 0 for 100% off", () => {
 
   expect(order.getTotal()).toBe(0);
 });
+
+test("should throw an error if coupon is invalid", () => {
+  const order = new Order({ cpf: "935.411.347-80" });
+  jest.useFakeTimers().setSystemTime(new Date("2022-02-21"));
+
+  expect(() =>
+    order.addCoupon(new Coupon("OFF100", 100, new Date("2022-02-20")))
+  ).toThrow();
+});

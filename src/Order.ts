@@ -22,6 +22,7 @@ export class Order {
   }
 
   addCoupon(coupon: Coupon) {
+    if (!coupon.isValid) throw new Error("Coupon is expired");
     this.coupon = coupon;
   }
 
