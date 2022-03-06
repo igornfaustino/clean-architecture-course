@@ -8,13 +8,13 @@ const createItem = ({
   category = "Instrumentos Musicais",
   description = "Guitarra",
   price = 1000,
-  width = 100,
-  height = 30,
-  length = 10,
-  weight = 3,
+  width = 0,
+  height = 0,
+  length = 0,
+  weight = 0,
 } = {}) => {
-  const dimension = new Dimension(width, height, length, weight);
-  return new Item(id, category, description, price, dimension);
+  const dimension = new Dimension(width, height, length);
+  return new Item(id, category, description, price, dimension, weight);
 };
 
 describe("Order", () => {
@@ -83,23 +83,13 @@ describe("Order", () => {
     expect(order.getTotal()).toBe(6090);
   });
 
-  test("should return min shipping price when value is lower", () => {
+  test("should return total with freight value", () => {
     const order = new Order("935.411.347-80");
 
-    const shipping = order.getShippingPrice(1000);
+    order.addItem(createItem({ price: 1000, width: 100, height: 30, length: 10, weight: 3 }), 1);
+    order.addItem(createItem({ price: 5000, width: 100, height: 50, length: 50, weight: 20 }), 1);
+    order.addItem(createItem({ price: 30, width: 10, height: 10, length: 10, weight: 1 }), 3);
 
-    expect(shipping).toBe(10);
-  });
-
-  test("should return shipping price", () => {
-    const order = new Order("935.411.347-80");
-    order.addItem(
-      createItem({ width: 100, height: 30, length: 10, weight: 3 }),
-      1
-    );
-
-    const shipping = order.getShippingPrice(1000);
-
-    expect(shipping).toBe(30);
+    expect(order.getTotal()).toBe(6350);
   });
 });

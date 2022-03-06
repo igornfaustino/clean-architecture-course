@@ -1,5 +1,6 @@
 import { Coupon } from "./Coupon";
 import { CPF } from "./cpf";
+import { Freight } from "./Freight";
 import { Item } from "./Item";
 import OrderItem from "./OrderItem";
 
@@ -8,14 +9,17 @@ export class Order {
   items: OrderItem[] = [];
   discount: number = 0;
   coupon?: Coupon;
+  freight: Freight;
 
   constructor(cpf: string, readonly issueDate: Date = new Date()) {
     this.cpf = new CPF(cpf);
+    this.freight = new Freight()
   }
 
   addItem(item: Item, quantity: number) {
+    this.freight.addItem(item, quantity)
     this.items.push(
-      new OrderItem(item.id, item.price, quantity, item.dimensions)
+      new OrderItem(item.id, item.price, quantity)
     );
   }
 
@@ -24,21 +28,12 @@ export class Order {
   }
 
   getTotal() {
-    const total = this.items.reduce(
+    let total = this.items.reduce(
       (total, orderItem) => orderItem.total + total,
       0
     );
-    if (this.coupon) return total - this.coupon.calculateDiscount(total)
-    return total;
-  }
-
-  getShippingPrice(distance: number) {
-    const totalShippingDimension = this.items.reduce(
-      (total, item) => total + item.shippingDimension,
-      0
-    );
-    const calculateShipping = distance * totalShippingDimension;
-    const shippingPrice = calculateShipping < 10 ? 10 : calculateShipping;
-    return parseFloat(shippingPrice.toFixed(2));
+    if (this.coupon) total -= this.coupon.calculateDiscount(total)
+    total += this.freight.calculate();
+    return total
   }
 }
