@@ -3,18 +3,14 @@ import { CPF } from "./cpf";
 import { Item } from "./Item";
 import OrderItem from "./OrderItem";
 
-type OrderData = {
-  cpf: string;
-};
-
 export class Order {
   cpf: CPF;
   items: OrderItem[] = [];
   discount: number = 0;
   coupon?: Coupon;
 
-  constructor(order: OrderData) {
-    this.cpf = new CPF(order.cpf);
+  constructor(cpf: string, readonly issueDate: Date = new Date()) {
+    this.cpf = new CPF(cpf);
   }
 
   addItem(item: Item, quantity: number) {
@@ -24,7 +20,7 @@ export class Order {
   }
 
   addCoupon(coupon: Coupon) {
-    if (!coupon.isExpired()) this.coupon = coupon;
+    if (!coupon.isExpired(this.issueDate)) this.coupon = coupon;
   }
 
   getTotal() {
