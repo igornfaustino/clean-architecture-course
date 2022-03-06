@@ -24,7 +24,7 @@ export class Order {
   }
 
   addCoupon(coupon: Coupon) {
-    if (coupon.isValid) this.coupon = coupon;
+    if (!coupon.isExpired()) this.coupon = coupon;
   }
 
   getTotal() {
