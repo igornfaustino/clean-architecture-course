@@ -24,4 +24,10 @@ describe("Coupon", () => {
 
     expect(coupon.isExpired(new Date("2022-02-21"))).toBe(true);
   });
+
+  test("should calculate discount", () => {
+    const coupon = new Coupon("ANY_NAME", 20);
+
+    expect(coupon.calculateDiscount(100)).toBe(20);
+  });
 });

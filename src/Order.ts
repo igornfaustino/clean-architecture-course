@@ -28,15 +28,8 @@ export class Order {
       (total, orderItem) => orderItem.total + total,
       0
     );
-    if (this.coupon) {
-      return this.getTotalWithDiscount(total, this.coupon.percentage);
-    }
+    if (this.coupon) return total - this.coupon.calculateDiscount(total)
     return total;
-  }
-
-  private getTotalWithDiscount(total: number, percentage: number) {
-    const discountValue = (total * percentage) / 100;
-    return total - discountValue;
   }
 
   getShippingPrice(distance: number) {
