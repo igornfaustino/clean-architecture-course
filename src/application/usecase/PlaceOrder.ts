@@ -13,7 +13,8 @@ export class PlaceOrder {
   ) { }
 
   async execute(input: PlaceOrderInput) {
-    const order = new Order(input.cpf)
+    const sequence = await this.orderRepository.count() + 1
+    const order = new Order(input.cpf, sequence, input.issueDate)
     for (const { idItem, quantity } of input.orderItems) {
       const item = await this.itemRepository.getById(idItem)
       if (!item) throw new Error("Item not found");
@@ -25,7 +26,7 @@ export class PlaceOrder {
     }
     this.orderRepository.save(order)
     const total = order.getTotal()
-    const output = new PlaceOrderOutput(total)
+    const output = new PlaceOrderOutput(total, order.code.value)
     return output
   }
 }

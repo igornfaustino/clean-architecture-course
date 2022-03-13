@@ -19,11 +19,11 @@ const createItem = ({
 
 describe("Order", () => {
   test("should not create an order with an invalid cpf", () => {
-    expect(() => new Order("11122233344")).toThrow();
+    expect(() => new Order("11122233344", 1)).toThrow();
   });
 
   test("should add an item to an order", () => {
-    const order = new Order("935.411.347-80");
+    const order = new Order("935.411.347-80", 1);
     const product = createItem();
 
     order.addItem(product, 1);
@@ -32,7 +32,7 @@ describe("Order", () => {
   });
 
   test("should calculate order total price", () => {
-    const order = new Order("935.411.347-80");
+    const order = new Order("935.411.347-80", 1);
 
     order.addItem(createItem({ price: 1000 }), 1);
     order.addItem(createItem({ price: 5000 }), 1);
@@ -41,14 +41,24 @@ describe("Order", () => {
     expect(order.getTotal()).toBe(6090);
   });
 
+  test("should create order code", () => {
+    const order = new Order("935.411.347-80", 1, new Date('2021-10-02'));
+
+    order.addItem(createItem({ price: 1000 }), 1);
+    order.addItem(createItem({ price: 5000 }), 1);
+    order.addItem(createItem({ price: 30 }), 3);
+
+    expect(order.code.value).toBe('202100000001');
+  });
+
   test("should return price 0 if has no order", () => {
-    const order = new Order("935.411.347-80");
+    const order = new Order("935.411.347-80", 1);
 
     expect(order.getTotal()).toBe(0);
   });
 
   test("should calculate correct price with discount", () => {
-    const order = new Order("935.411.347-80");
+    const order = new Order("935.411.347-80", 1);
     order.addItem(createItem({ price: 100 }), 1);
     order.addCoupon(new Coupon("OFF20", 20));
 
@@ -56,7 +66,7 @@ describe("Order", () => {
   });
 
   test("should have price 0 for 100% off", () => {
-    const order = new Order("935.411.347-80");
+    const order = new Order("935.411.347-80", 1);
 
     order.addCoupon(new Coupon("OFF100", 100));
     order.addItem(createItem({ price: 100 }), 2);
@@ -65,7 +75,7 @@ describe("Order", () => {
   });
 
   test("should calculate correct price with discount when coupon is valid", () => {
-    const order = new Order("935.411.347-80", new Date("2022-02-19"));
+    const order = new Order("935.411.347-80", 1, new Date("2022-02-19"));
     order.addItem(createItem({ price: 100 }), 1);
     order.addCoupon(new Coupon("OFF20", 20, new Date("2022-02-20")));
 
@@ -73,7 +83,7 @@ describe("Order", () => {
   });
 
   test("should not apply discount if coupon is invalid", () => {
-    const order = new Order("935.411.347-80", new Date("2022-02-21"));
+    const order = new Order("935.411.347-80", 1, new Date("2022-02-21"));
 
     order.addItem(createItem({ price: 1000 }), 1);
     order.addItem(createItem({ price: 5000 }), 1);
@@ -84,7 +94,7 @@ describe("Order", () => {
   });
 
   test("should return total with freight value", () => {
-    const order = new Order("935.411.347-80");
+    const order = new Order("935.411.347-80", 1);
 
     order.addItem(createItem({ price: 1000, width: 100, height: 30, length: 10, weight: 3 }), 1);
     order.addItem(createItem({ price: 5000, width: 100, height: 50, length: 50, weight: 20 }), 1);
