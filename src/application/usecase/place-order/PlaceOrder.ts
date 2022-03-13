@@ -1,7 +1,7 @@
-import { Order } from "../../domain/entity/Order";
-import { CouponRepository } from "../../domain/repository/CouponRepository";
-import { ItemRepository } from "../../domain/repository/ItemRepository";
-import { OrderRepository } from "../../domain/repository/OrderRepository";
+import { Order } from "../../../domain/entity/Order";
+import { CouponRepository } from "../../../domain/repository/CouponRepository";
+import { ItemRepository } from "../../../domain/repository/ItemRepository";
+import { OrderRepository } from "../../../domain/repository/OrderRepository";
 import PlaceOrderInput from "./PlaceOrderInput";
 import { PlaceOrderOutput } from "./PlaceOrderOutput";
 

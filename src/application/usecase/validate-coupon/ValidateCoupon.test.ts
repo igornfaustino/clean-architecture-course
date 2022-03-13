@@ -1,4 +1,4 @@
-import CouponRepositoryMemory from "../../infra/repository/memory/CouponRepositoryMemory"
+import CouponRepositoryMemory from "../../../infra/repository/memory/CouponRepositoryMemory"
 import { ValidateCoupon } from "./ValidateCoupon"
 
 test("should validate coupon", async () => {

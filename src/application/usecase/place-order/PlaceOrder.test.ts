@@ -1,6 +1,6 @@
-import CouponRepositoryMemory from "../../infra/repository/memory/CouponRepositoryMemory";
-import ItemRepositoryMemory from "../../infra/repository/memory/ItemRepositoryMemory";
-import OrderRepositoryMemory from "../../infra/repository/memory/OrderRepositoryMemory";
+import CouponRepositoryMemory from "../../../infra/repository/memory/CouponRepositoryMemory";
+import ItemRepositoryMemory from "../../../infra/repository/memory/ItemRepositoryMemory";
+import OrderRepositoryMemory from "../../../infra/repository/memory/OrderRepositoryMemory";
 import { PlaceOrder } from "./PlaceOrder";
 
 test("Should place an order", async () => {
