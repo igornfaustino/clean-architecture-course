@@ -7,10 +7,9 @@ test('should calculate volume', () => {
 })
 
 test.each([
-  [-100, 30, 10],
-  [100, -30, 10],
-  [100, 30, -10]
-])('should throw if dimension is negative', (width, height, length) => {
-
-  expect(() => new Dimension(width, height, length)).toThrow()
+  [-100, 30, 10, 'width'],
+  [100, -30, 10, 'height'],
+  [100, 30, -10, 'length']
+])('should throw if dimension is negative', (width, height, length, field) => {
+  expect(() => new Dimension(width, height, length)).toThrow(new Error(`invalid ${field}`))
 })
