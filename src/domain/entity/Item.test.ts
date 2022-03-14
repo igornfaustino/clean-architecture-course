@@ -19,3 +19,7 @@ test("Should create an item without dimensions and weight", () => {
   expect(item.density).toBe(0)
   expect(item.volume).toBe(0)
 })
+
+test("Should throw if invalid weight is passed", () => {
+  expect(() => new Item(1, 'Music', 'Guitar', 1000, undefined, -10)).toThrow()
+})
