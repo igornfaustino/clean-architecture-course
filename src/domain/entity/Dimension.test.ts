@@ -5,3 +5,12 @@ test('should calculate volume', () => {
 
   expect(dimension.volume).toBe(0.03)
 })
+
+test.each([
+  [-100, 30, 10],
+  [100, -30, 10],
+  [100, 30, -10]
+])('should throw if dimension is negative', (width, height, length) => {
+
+  expect(() => new Dimension(width, height, length)).toThrow()
+})
