@@ -5,6 +5,10 @@ import { Connection } from "../../database/Connection";
 export default class OrderRepositoryDatabase implements OrderRepository {
 	constructor(readonly connection: Connection) { }
 
+	list(): Promise<Order[]> {
+		throw new Error("Method not implemented.");
+	}
+
 	getByCode(code: string): Promise<Order | undefined> {
 		throw new Error("Method not implemented.");
 	}

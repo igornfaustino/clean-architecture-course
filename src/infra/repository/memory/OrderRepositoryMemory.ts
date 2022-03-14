@@ -8,6 +8,10 @@ export default class OrderRepositoryMemory implements OrderRepository {
     this.orders = [];
   }
 
+  async list(): Promise<Order[]> {
+    return this.orders
+  }
+
   async getByCode(code: string): Promise<Order | undefined> {
     return this.orders.find(order => order.code.value === code)
   }
