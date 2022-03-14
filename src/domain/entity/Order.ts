@@ -8,7 +8,6 @@ import OrderItem from "./OrderItem";
 export class Order {
   cpf: CPF;
   items: OrderItem[] = [];
-  discount: number = 0;
   coupon?: Coupon;
   freight: Freight;
   code: OrderCode
