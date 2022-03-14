@@ -18,7 +18,12 @@ export class Order {
     this.code = new OrderCode(issueDate, sequence)
   }
 
+  isItemAlreadyOnOrder = (item: Item) => {
+    return this.items.some(orderItem => orderItem.idItem === item.id)
+  }
+
   addItem(item: Item, quantity: number) {
+    if (this.isItemAlreadyOnOrder(item)) throw new Error('duplicated item')
     this.freight.addItem(item, quantity)
     this.items.push(
       new OrderItem(item.id, item.price, quantity)
