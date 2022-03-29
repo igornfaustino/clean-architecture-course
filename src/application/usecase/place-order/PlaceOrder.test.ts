@@ -1,13 +1,14 @@
-import CouponRepositoryMemory from "../../../infra/repository/memory/CouponRepositoryMemory";
-import ItemRepositoryMemory from "../../../infra/repository/memory/ItemRepositoryMemory";
-import OrderRepositoryMemory from "../../../infra/repository/memory/OrderRepositoryMemory";
+import { MemoryRepositoryFactory } from "../../../infra/factory/MemoryRepositoryFactory";
 import { PlaceOrder } from "./PlaceOrder";
 
+const setup = () => {
+  const repositoryFactory = new MemoryRepositoryFactory();
+  const placeOrder = new PlaceOrder(repositoryFactory);
+  return { placeOrder }
+}
+
 test("Should place an order", async () => {
-  const itemRepository = new ItemRepositoryMemory()
-  const orderRepository = new OrderRepositoryMemory()
-  const couponRepository = new CouponRepositoryMemory()
-  const placeOrder = new PlaceOrder(itemRepository, couponRepository, orderRepository);
+  const { placeOrder } = setup();
   const placeOrderInput = {
     cpf: '935.411.347-80',
     orderItems: [
@@ -24,10 +25,7 @@ test("Should place an order", async () => {
 })
 
 test("Should create an order", async () => {
-  const itemRepository = new ItemRepositoryMemory()
-  const orderRepository = new OrderRepositoryMemory()
-  const couponRepository = new CouponRepositoryMemory()
-  const placeOrder = new PlaceOrder(itemRepository, couponRepository, orderRepository);
+  const { placeOrder } = setup();
   const placeOrderInput = {
     cpf: '935.411.347-80',
     orderItems: [
