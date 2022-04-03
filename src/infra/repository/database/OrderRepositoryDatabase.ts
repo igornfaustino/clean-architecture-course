@@ -1,3 +1,6 @@
+import { Coupon } from "../../../domain/entity/Coupon";
+import { Dimension } from "../../../domain/entity/Dimension";
+import { Item } from "../../../domain/entity/Item";
 import { Order } from "../../../domain/entity/Order";
 import { OrderRepository } from "../../../domain/repository/OrderRepository";
 import { Connection } from "../../database/Connection";
@@ -5,35 +8,74 @@ import { Connection } from "../../database/Connection";
 export default class OrderRepositoryDatabase implements OrderRepository {
 	constructor(readonly connection: Connection) { }
 
-	list(): Promise<Order[]> {
-		throw new Error("Method not implemented.");
+	async getAll(): Promise<Order[]> {
+		const ordersData = await this.connection.query("select * from ccca.order", []);
+		const orders = [];
+		for (const orderData of ordersData) {
+			if (!orderData) throw new Error("Order not found");
+			const order = new Order(orderData.cpf, orderData.sequence, new Date(orderData.issue_date));
+			const orderItemsData = await this.connection.query("select * from ccca.order_item where id_order = $1", [orderData.id_order]);
+			for (const orderItemData of orderItemsData) {
+				const [itemData] = await this.connection.query("select * from ccca.item where id_item = $1", [orderItemData.id_item]);
+				const item = new Item(itemData.id_item, itemData.category, itemData.description, parseFloat(orderItemData.price), new Dimension(itemData.width, itemData.height, itemData.length), itemData.weight);
+				order.addItem(item, orderItemData.quantity);
+			}
+			if (orderData.coupon) {
+				const [couponData] = await this.connection.query("select * from ccca.coupon where code = $1", [orderData.coupon]);
+				const coupon = new Coupon(couponData.code, parseFloat(couponData.percentage), new Date(couponData.expire_date));
+				order.addCoupon(coupon);
+			}
+			orders.push(order);
+		}
+		return orders;
 	}
 
-	getByCode(code: string): Promise<Order | undefined> {
-		throw new Error("Method not implemented.");
+	async getByCode(code: string): Promise<Order | undefined> {
+		const [orderData] = await this.connection.query("select * from ccca.order where code = $1", [code]);
+		if (!orderData) throw new Error("Order not found");
+		const order = new Order(orderData.cpf, orderData.sequence, new Date(orderData.issue_date));
+		const orderItemsData = await this.connection.query("select * from ccca.order_item where id_order = $1", [orderData.id_order]);
+		for (const orderItemData of orderItemsData) {
+			const [itemData] = await this.connection.query("select * from ccca.item where id_item = $1", [orderItemData.id_item]);
+			const item = new Item(itemData.id_item, itemData.category, itemData.description, parseFloat(itemData.price), new Dimension(itemData.width, itemData.height, itemData.length), itemData.weight);
+			order.addItem(item, orderItemData.quantity);
+		}
+		if (orderData.coupon) {
+			const [couponData] = await this.connection.query("select * from ccca.coupon where code = $1", [orderData.coupon]);
+			const coupon = new Coupon(couponData.code, parseFloat(couponData.percentage), new Date(couponData.expire_date));
+			order.addCoupon(coupon);
+		}
+		return order;
 	}
 
 	async save(order: Order): Promise<void> {
-		await this.connection.query('insert into ccca.order(code, total, freight, coupon, cpf) values ($1, $2, $3, $4, $5)',
-			[
-				order.code.value,
-				order.getTotal(),
-				order.freight.calculate(1000),
-				order.coupon?.code,
-				order.cpf.cpf
-			])
+		const [orderData] = await this.connection.query("insert into ccca.order (code, cpf, issue_date, coupon, freight, sequence, total) values ($1, $2, $3, $4, $5, $6, $7) returning *", [
+			order.code.value,
+			order.cpf.cpf,
+			order.issueDate,
+			order.coupon?.code,
+			order.freight.calculate(),
+			order.sequence,
+			order.getTotal()
+		]);
 		for (const orderItem of order.items) {
-			await this.connection.query('insert into ccca.orderItem(orderId, itemId, quantity) values ($1, $2, $3)',
+			await this.connection.query("insert into ccca.order_item (id_order, id_item, price, quantity) values ($1, $2, $3, $4)",
 				[
-					order.code.value,
+					orderData.id_order,
 					orderItem.idItem,
-					orderItem.quantity,
-				])
+					orderItem.price,
+					orderItem.quantity
+				]);
 		}
 	}
 
 	async count(): Promise<number> {
-		const [{ count }] = await this.connection.query('select count(distinct code) from ccca.order', [])
-		return parseInt(count)
+		const [row] = await this.connection.query("select count(*)::int as count from ccca.order", []);
+		return row.count;
+	}
+
+	async clean(): Promise<void> {
+		await this.connection.query("delete from ccca.order_item", []);
+		await this.connection.query("delete from ccca.order", []);
 	}
 }

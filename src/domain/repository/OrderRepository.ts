@@ -4,5 +4,5 @@ export interface OrderRepository {
   save(order: Order): Promise<void>
   count(): Promise<number>
   getByCode(code: string): Promise<Order | undefined>
-  list(): Promise<Order[]>
+  getAll(): Promise<Order[]>
 }

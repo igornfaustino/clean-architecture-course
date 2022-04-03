@@ -4,6 +4,6 @@ export class ListOrders {
   constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute() {
-    return this.orderRepository.list()
+    return this.orderRepository.getAll()
   }
 }

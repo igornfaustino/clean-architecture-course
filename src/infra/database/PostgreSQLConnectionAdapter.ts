@@ -5,8 +5,8 @@ import { Connection } from "./Connection";
 export default class PostgreSQLConnectionAdapter implements Connection {
 	connection: any;
 
-	constructor () {
-		this.connection = pgp()("postgres://postgres:postgres@localhost:5432/app");
+	constructor() {
+		this.connection = pgp()("postgres://postgres:postgres@localhost:5432/postgres");
 	}
 
 	query(stmt: string, params: any): Promise<any> {

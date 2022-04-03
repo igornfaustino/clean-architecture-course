@@ -8,7 +8,7 @@ beforeEach(function () {
 	connection = new PostgreSQLConnectionAdapter();
 });
 
-test("Deve testar o repositório de item", async function () {
+test("Should get item by id", async function () {
 	const itemRepository = new ItemRepositoryDatabase(connection);
 	const item = await itemRepository.getById(1);
 	expect(item?.description).toBe("Guitarra");
