@@ -1,16 +1,16 @@
 import { Order } from "../../../domain/entity/Order"
-import OrderRepositoryMemory from "../../../infra/repository/memory/OrderRepositoryMemory"
+import { MemoryRepositoryFactory } from "../../../infra/factory/MemoryRepositoryFactory"
 import { GetOrderByCode } from "./GetOrderByCode"
 
 const setup = () => {
-  const orderRepository = new OrderRepositoryMemory()
-  const getOrderByCode = new GetOrderByCode(orderRepository)
-  return { getOrderByCode, orderRepository }
+  const repositoryFactory = new MemoryRepositoryFactory()
+  const getOrderByCode = new GetOrderByCode(repositoryFactory)
+  return { getOrderByCode }
 }
 
 test("should get order by code", async () => {
-  const { getOrderByCode, orderRepository } = setup()
-  orderRepository.save(new Order('46996189870', 1, new Date('2021-10-21')))
+  const { getOrderByCode } = setup()
+  getOrderByCode.orderRepository.save(new Order('46996189870', 1, new Date('2021-10-21')))
 
   const order = await getOrderByCode.execute('202100000001')
 
