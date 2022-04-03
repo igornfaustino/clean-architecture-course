@@ -23,6 +23,7 @@ export class Order {
   }
 
   addItem(item: Item, quantity: number) {
+    if (quantity < 0) throw new Error("Quantity must be positive")
     if (this.isItemAlreadyOnOrder(item)) throw new Error('duplicated item')
     this.freight.addItem(item, quantity)
     this.items.push(

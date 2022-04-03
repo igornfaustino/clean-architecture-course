@@ -111,4 +111,11 @@ describe("Order", () => {
 
     expect(() => order.addItem(item, 4)).toThrow()
   });
+
+  test("should throw when trying to create item ifj negative quantity", () => {
+    const order = new Order("935.411.347-80", 1, new Date("2022-02-21"));
+    const item = createItem({ id: 1, price: 1000 })
+
+    expect(() => order.addItem(item, -4)).toThrow()
+  });
 });
