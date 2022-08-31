@@ -1,21 +1,18 @@
-import { StockItem } from "../../../domain/entity/StockItem";
+import { StockEntry } from "../../../domain/entity/StockEntry";
 import { StockItemRepository } from "../../../domain/repository/StockItemRepository";
 
 export default class StockItemRepositoryMemory implements StockItemRepository {
-  stockItems: StockItem[];
+  stockEntries: StockEntry[];
 
   constructor() {
-    this.stockItems = [
-      new StockItem(1, 10)
-    ];
+    this.stockEntries = [new StockEntry(1, "in", 10)];
   }
 
-
-  async getBySKU(sku: number): Promise<StockItem | undefined> {
-    return this.stockItems.find(stockItem => stockItem.sku === sku)
+  async getBySKU(sku: number): Promise<StockEntry | undefined> {
+    return this.stockEntries.find((StockEntry) => StockEntry.idItem === sku);
   }
 
-  async save(stockItem: StockItem) {
-    this.stockItems.push(stockItem);
+  async save(StockEntry: StockEntry) {
+    this.stockEntries.push(StockEntry);
   }
 }

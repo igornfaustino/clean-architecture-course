@@ -1,6 +1,6 @@
-import { StockItem } from "../entity/StockItem";
+import { StockEntry } from "../entity/StockEntry";
 
 export interface StockItemRepository {
-  getBySKU(sku: number): Promise<StockItem | undefined>
-  save(stockItem: StockItem): Promise<void>
+  getBySKU(sku: number): Promise<StockEntry | undefined>;
+  save(stockItem: StockEntry): Promise<void>;
 }

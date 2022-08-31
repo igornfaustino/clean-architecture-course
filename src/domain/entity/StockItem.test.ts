@@ -1,25 +1,11 @@
-import { StockItem } from "./StockItem";
+import { StockEntry } from "./StockEntry";
 
-describe(StockItem.name, () => {
-  test("should increase stock", () => {
-    const item = new StockItem(1, 10)
+describe(StockEntry.name, () => {
+  test("should create an stock entry", () => {
+    const stockEntry = new StockEntry(1, "in", 6);
 
-    item.increase(3)
-
-    expect(item.getQuantity()).toBe(13)
-  })
-
-  test("should decrease stock", () => {
-    const item = new StockItem(1, 10)
-
-    item.decrease(3)
-
-    expect(item.getQuantity()).toBe(7)
-  })
-
-  test("should throw when stock is bellow 0", () => {
-    const item = new StockItem(1, 10)
-
-    expect(() => item.decrease(11)).toThrow()
-  })
-})
+    expect(stockEntry.idItem).toBe(1);
+    expect(stockEntry.operation).toBe("in");
+    expect(stockEntry.quantity).toBe(6);
+  });
+});
