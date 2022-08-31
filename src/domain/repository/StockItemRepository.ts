@@ -1,6 +1,7 @@
 import { StockEntry } from "../entity/StockEntry";
 
-export interface StockItemRepository {
-  getBySKU(sku: number): Promise<StockEntry | undefined>;
+export interface StockEntryRepository {
+  getAll(idItem: number): Promise<StockEntry[]>;
   save(stockItem: StockEntry): Promise<void>;
+  clean(): Promise<void>;
 }
