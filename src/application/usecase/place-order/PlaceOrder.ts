@@ -1,10 +1,11 @@
 import { Order } from "../../../domain/entity/Order";
-import { StockEntry } from "../../../domain/entity/StockEntry";
+import { OrderPlaced } from "../../../domain/event/OrderPlaced";
 import RepositoryFactory from "../../../domain/factory/RepositoryFactory";
 import { CouponRepository } from "../../../domain/repository/CouponRepository";
 import { ItemRepository } from "../../../domain/repository/ItemRepository";
 import { OrderRepository } from "../../../domain/repository/OrderRepository";
 import { StockEntryRepository } from "../../../domain/repository/StockItemRepository";
+import Mediator from "../../../infra/mediator/Mediator";
 import PlaceOrderInput from "./PlaceOrderInput";
 import { PlaceOrderOutput } from "./PlaceOrderOutput";
 
@@ -14,7 +15,10 @@ export class PlaceOrder {
   readonly orderRepository: OrderRepository;
   readonly stockEntryRepository: StockEntryRepository;
 
-  constructor(readonly repositoryFactory: RepositoryFactory) {
+  constructor(
+    readonly repositoryFactory: RepositoryFactory,
+    readonly mediator: Mediator = new Mediator()
+  ) {
     this.couponRepository = repositoryFactory.createCouponRepository();
     this.itemRepository = repositoryFactory.createItemRepository();
     this.orderRepository = repositoryFactory.createOrderRepository();
@@ -33,13 +37,9 @@ export class PlaceOrder {
       const coupon = await this.couponRepository.getByCode(input.coupon);
       if (coupon) order.addCoupon(coupon);
     }
-    this.orderRepository.save(order);
+    await this.orderRepository.save(order);
     const total = order.getTotal();
-    for (const { idItem, quantity } of input.orderItems) {
-      await this.stockEntryRepository.save(
-        new StockEntry(idItem, "out", quantity)
-      );
-    }
+    this.mediator.publish(new OrderPlaced(order));
     const output = new PlaceOrderOutput(total, order.code.value);
     return output;
   }

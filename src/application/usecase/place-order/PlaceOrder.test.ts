@@ -1,6 +1,8 @@
 import { Connection } from "../../../infra/database/Connection";
 import PostgreSQLConnectionAdapter from "../../../infra/database/PostgreSQLConnectionAdapter";
 import { DatabaseRepositoryFactory } from "../../../infra/factory/DatabaseRepositoryFactory";
+import Mediator from "../../../infra/mediator/Mediator";
+import { StockEntryHandler } from "../../handlers/StockEntryHandler";
 import { GetStock } from "../getStock/GetStock";
 import { PlaceOrder } from "./PlaceOrder";
 
@@ -8,13 +10,16 @@ let connection: Connection;
 
 const setup = (connection: Connection) => {
   const repositoryFactory = new DatabaseRepositoryFactory(connection);
-  const placeOrder = new PlaceOrder(repositoryFactory);
+  const mediator = new Mediator();
+  const stockHandler = new StockEntryHandler(repositoryFactory);
+  mediator.register(stockHandler);
+  const placeOrder = new PlaceOrder(repositoryFactory, mediator);
   const orderRepository = repositoryFactory.createOrderRepository();
   const getStock = new GetStock(repositoryFactory);
-  return { placeOrder, orderRepository, getStock };
+  return { placeOrder, orderRepository, getStock, mediator, stockHandler };
 };
 
-beforeAll(async function () {
+beforeEach(async function () {
   connection = new PostgreSQLConnectionAdapter();
 });
 
@@ -80,6 +85,6 @@ test("Should update stock when order is created", async () => {
   expect(item3).toBe(-3);
 });
 
-afterAll(async () => {
+afterEach(async () => {
   await connection.close();
 });
