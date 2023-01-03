@@ -1,3 +1,3 @@
 # Clean Architecture Course
 
-This project was made to learn more about clean architecture and ddd
+This project was made to learn more about clean architecture and DDD
